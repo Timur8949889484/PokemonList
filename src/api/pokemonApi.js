@@ -1,39 +1,16 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "https://pokeapi.co/api/v2/",
-});
-
+const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 export const getPokemons = async (limit = 20) => {
   try {
-    const response = await api.get("pokemon", {
-      params: {
-        limit: limit,
-      },
-    });
+    const response = await fetch(`${BASE_URL}?limit=${limit}`);
 
-    return response.data.results;
+    if (!response.ok) {
+      throw new Error("Ошибка при получении данных с сервера");
+    }
+
+    const data = await response.json();
+    return data.results;
   } catch (error) {
-    console.error("Ошибка при запросе к PokeAPI:", error.message);
+    console.error("API Error:", error);
     throw error;
   }
 };
-
-//это просто через фетч, мне просто аксиос легче
-
-// const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
-// export const getPokemons = async (limit = 20) => {
-//   try {
-//     const response = await fetch(`${BASE_URL}?limit=${limit}`);
-
-//     if (!response.ok) {
-//       throw new Error("Ошибка при получении данных с сервера");
-//     }
-
-//     const data = await response.json();
-//     return data.results;
-//   } catch (error) {
-//     console.error("API Error:", error);
-//     throw error;
-//   }
-// };

@@ -1,25 +1,15 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getPokemons } from "../api/pokemonApi";
 
 export const usePokemons = () => {
-  const [pokemons, setPokemons] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["pokemons"],
+    queryFn: () => getPokemons(),
+  });
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const data = await getPokemons();
-        setPokemons(data);
-      } catch (err) {
-        setError("Не удалось загрузить данные", err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
-
-  return { pokemons, loading, error };
+  return {
+    pokemons: data || [],
+    loading: isLoading,
+    error: isError ? error.message : null,
+  };
 };
